@@ -1,0 +1,122 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 150px);
+}
+
+.timerCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px;
+}
+
+.modeTabs {
+  display: flex;
+  gap: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.5rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 2rem;
+}
+
+.modeTab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  opacity: 0.7;
+  transition: var(--transition);
+}
+
+.modeTab.active {
+  background: var(--surface-hover);
+  opacity: 1;
+  color: var(--primary);
+}
+
+.timerDisplayWrapper {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+.progressRing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(-90deg);
+}
+
+.timeText {
+  font-size: 5rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.7));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.controlBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 60px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: var(--transition);
+}
+
+.startBtn {
+  width: 200px;
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 10px 20px var(--primary-glow);
+}
+
+.startBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px var(--primary-glow);
+}
+
+.pauseBtn {
+  width: 200px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+}
+
+.pauseBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.resetBtn {
+  width: 60px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.resetBtn:hover {
+  background: var(--surface-hover);
+}
