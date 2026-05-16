@@ -62,10 +62,10 @@
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  padding: 0.7rem 1rem;
-  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-full);
   color: var(--foreground-muted);
-  transition: var(--transition);
+  transition: var(--transition-fast);
   font-weight: 500;
   font-size: 0.95rem;
   text-decoration: none;
@@ -73,23 +73,17 @@
 
 .navItem:hover {
   color: var(--foreground);
-  background: var(--primary-soft);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+:root[data-theme="dark"] .navItem:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .active {
   color: var(--primary) !important;
   background: var(--primary-soft);
   font-weight: 600;
-}
-
-.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  width: 3px;
-  height: 20px;
-  background: var(--primary);
-  border-radius: 0 3px 3px 0;
 }
 
 .bottomNav {

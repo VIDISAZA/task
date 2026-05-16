@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google';
+import { Inter, Playfair_Display } from 'next/font/google';
 import Sidebar from '@/components/Sidebar';
 import ThemeProvider from '@/components/ThemeProvider';
 import Providers from '@/components/Providers';
@@ -6,6 +6,7 @@ import SessionSync from '@/components/SessionSync';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-serif' });
 
 const siteUrl = process.env.NEXTAUTH_URL || 'https://task-peach-three.vercel.app';
 
@@ -53,7 +54,7 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body className={`${inter.variable}`}>
+      <body className={`${inter.variable} ${playfair.variable}`}>
         <Providers>
           <ThemeProvider>
             <SessionSync />

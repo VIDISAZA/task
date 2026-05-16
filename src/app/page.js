@@ -56,18 +56,17 @@ export default function Home() {
       
       <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
         {/* Hero Greeting Card */}
-        <div className="glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '2rem', gap: '2rem', flexWrap: 'wrap' }}>
+        <div className="glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '2.5rem', gap: '2rem', flexWrap: 'wrap', border: 'none', background: 'var(--surface)' }}>
           <div style={{ flex: 1, minWidth: '280px' }}>
-            <h2 style={{ fontSize: '1.8rem', marginBottom: '0.5rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
-              {greeting.text}, {userName}! {greeting.emoji}
+            <h2 className="font-serif" style={{ fontSize: '2.2rem', marginBottom: '0.75rem', fontWeight: 500 }}>
+              {greeting.text}, {userName} {greeting.emoji}
             </h2>
-            <p style={{ color: 'var(--foreground-muted)', fontSize: '1rem', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-              <span className="gradient-text" style={{ fontWeight: 600 }}>More than a to-do list.</span>{' '}
-              {insight}
+            <p style={{ color: 'var(--foreground-muted)', fontSize: '1rem', marginBottom: '2rem', lineHeight: 1.6, maxWidth: '600px' }}>
+              Your space for notes, tasks, and big ideas. {insight}
             </p>
             <Link href="/focus">
               <button className="btn-primary">
-                Start Focus Session <ArrowRight size={16} />
+                Start Focus Session
               </button>
             </Link>
           </div>
@@ -75,13 +74,13 @@ export default function Home() {
           {mounted && (
             <div style={{ 
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-              background: 'var(--primary-soft)', padding: '1.25rem 1.75rem', borderRadius: 'var(--radius-xl)', 
-              border: '1px solid var(--primary-glow)', minWidth: '160px'
+              background: 'var(--surface-solid)', padding: '1.5rem 2rem', borderRadius: 'var(--radius-xl)', 
+              boxShadow: 'var(--shadow-sm)', minWidth: '160px'
             }}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary)', letterSpacing: '-0.02em' }}>
+              <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--foreground)' }}>
                 {currentDate.day}
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--foreground-muted)', letterSpacing: '0.5px', textTransform: 'uppercase', fontWeight: 500 }}>
+              <div style={{ fontSize: '0.85rem', color: 'var(--foreground-muted)' }}>
                 {currentDate.date}
               </div>
             </div>
@@ -89,7 +88,7 @@ export default function Home() {
         </div>
 
         {/* Stats Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginTop: '2rem' }}>
           <div className="glass-panel" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <div style={{ padding: '0.75rem', background: 'var(--success-soft)', borderRadius: 'var(--radius-md)', color: 'var(--success)' }}>
               <Target size={22} />
