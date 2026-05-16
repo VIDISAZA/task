@@ -3,33 +3,54 @@ import { persist } from 'zustand/middleware';
 
 export const useUserStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       profile: {
-        name: 'Felix',
-        email: 'felix@example.com',
-        avatarSeed: 'Felix',
-        birthDate: '2000-01-01',
-        bio: 'Leveling up my life one task at a time. Currently focusing on launching the new marketing campaign and maintaining my daily reading habit.',
+        name: 'User',
+        email: '',
+        avatarSeed: 'User',
+        birthDate: '',
+        bio: 'Welcome to Arion! Set up your profile to get started.',
         notifications: true,
-        darkMode: true,
+        darkMode: false, // Default to light mode (Craft-inspired)
+        initialized: false,
       },
+      
       updateProfile: (updates) => set((state) => ({
         profile: { ...state.profile, ...updates }
       })),
+
+      // Initialize profile from session data (first login)
+      initFromSession: (sessionUser) => {
+        const current = get().profile;
+        // Only initialize if not already done
+        if (!current.initialized && sessionUser) {
+          set({
+            profile: {
+              ...current,
+              name: sessionUser.name || current.name,
+              email: sessionUser.email || current.email,
+              avatarSeed: sessionUser.image || sessionUser.name || current.avatarSeed,
+              initialized: true,
+            }
+          });
+        }
+      },
+
       logout: () => set({
         profile: {
-          name: 'Guest',
+          name: 'User',
           email: '',
-          avatarSeed: 'Guest',
+          avatarSeed: 'User',
           birthDate: '',
-          bio: 'Welcome to Arion.',
-          notifications: false,
-          darkMode: true,
+          bio: 'Welcome to Arion!',
+          notifications: true,
+          darkMode: false,
+          initialized: false,
         }
       })
     }),
     {
-      name: 'arion-user-storage', // saves to localStorage so settings persist across reloads
+      name: 'arion-user-storage',
     }
   )
 );

@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google';
 import Sidebar from '@/components/Sidebar';
 import ThemeProvider from '@/components/ThemeProvider';
 import Providers from '@/components/Providers';
+import SessionSync from '@/components/SessionSync';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -38,10 +39,24 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Anti-flicker theme script — runs before React hydration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var t = localStorage.getItem('arion-theme');
+                if (t) document.documentElement.setAttribute('data-theme', t);
+              } catch(e) {}
+            `,
+          }}
+        />
+      </head>
       <body className={`${inter.variable}`}>
         <Providers>
           <ThemeProvider>
+            <SessionSync />
             <div className="page-container">
               <Sidebar />
               <main className="main-content">
