@@ -1,15 +1,21 @@
-import { Bell, Search } from 'lucide-react';
+import { Bell, Search, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import styles from './Topbar.module.css';
-import { useUserStore } from '@/store/useUserStore';
 import { useEffect, useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Topbar({ title }) {
-  const { profile } = useUserStore();
+  const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <header className={styles.topbar}>
       <h1 className={styles.title}>{title}</h1>
@@ -20,6 +26,12 @@ export default function Topbar({ title }) {
           <input type="text" placeholder="Search tasks..." className={styles.searchInput} />
         </div>
         
+        {mounted && (
+          <div className={styles.digitalClock}>
+            {currentTime.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+          </div>
+        )}
+
         <div className={styles.notifContainer}>
           <button className={styles.iconBtn} onClick={() => setIsNotifOpen(!isNotifOpen)}>
             <Bell size={20} />
@@ -58,14 +70,29 @@ export default function Topbar({ title }) {
           )}
         </div>
         
-        <Link href="/profile" className={styles.avatar}>
-          {mounted && (
-            <img 
-              src={profile.avatarSeed?.startsWith('data:image') ? profile.avatarSeed : `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.avatarSeed}`} 
-              alt="User Avatar" 
-            />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Link href="/profile" className={styles.avatar}>
+            {mounted && session?.user ? (
+              <img 
+                src={session.user.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${session.user.name}`} 
+                alt="User Avatar" 
+              />
+            ) : (
+              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Guest`} alt="Guest Avatar" />
+            )}
+          </Link>
+          
+          {session && (
+            <button 
+              onClick={() => signOut({ callbackUrl: '/login' })} 
+              className={styles.iconBtn} 
+              title="Sign Out"
+              style={{ color: 'var(--danger)', opacity: 0.8 }}
+            >
+              <LogOut size={20} />
+            </button>
           )}
-        </Link>
+        </div>
       </div>
     </header>
   );

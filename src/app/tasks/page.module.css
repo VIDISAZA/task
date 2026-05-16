@@ -161,7 +161,7 @@
   margin-bottom: 0.35rem;
   font-size: 0.95rem;
   letter-spacing: -0.01em;
-  color: #fff;
+  color: var(--foreground);
 }
 
 .taskTitle.completed {
@@ -197,6 +197,131 @@
 .emptyState p {
   font-size: 0.9rem;
   margin-top: 0.5rem;
+}
+
+/* Calendar View Styles */
+.calendarContainer {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.calendarHeader h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.calendarNavBtn {
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.calendarNavBtn:hover {
+  background: var(--primary);
+  color: white;
+  transform: scale(1.1);
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.weekdayHeader {
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  opacity: 0.6;
+  padding-bottom: 0.5rem;
+}
+
+.dayCell {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  min-height: 100px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+
+.dayCell:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.dayCell.otherMonth {
+  opacity: 0.3;
+}
+
+.dayCell.today {
+  border-color: rgba(168, 85, 247, 0.5);
+  background: rgba(168, 85, 247, 0.05);
+}
+
+.dayNumber {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  align-self: flex-end;
+}
+
+.dayCell.today .dayNumber {
+  background: var(--primary);
+  color: white;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.taskPill {
+  font-size: 0.65rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: white;
+  font-weight: 500;
+}
+
+.taskPill.high { background: rgba(244, 63, 94, 0.8); }
+.taskPill.medium { background: rgba(234, 179, 8, 0.8); }
+.taskPill.low { background: rgba(59, 130, 246, 0.8); }
+.taskPill.completed { 
+  background: rgba(255, 255, 255, 0.1); 
+  text-decoration: line-through; 
+  opacity: 0.5; 
 }
 
 /* Modal styles for Add Task */

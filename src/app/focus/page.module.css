@@ -75,6 +75,84 @@
   display: flex;
   gap: 1rem;
   align-items: center;
+  margin-top: 1rem;
+}
+
+.durationControls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.durationAdjust {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: var(--surface-hover);
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+}
+
+.durationAdjust button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.durationAdjust button:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: scale(1.1);
+}
+
+.durationAdjust span {
+  font-size: 1.2rem;
+  font-weight: 600;
+  min-width: 60px;
+  text-align: center;
+}
+
+.durationPresets {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.durationPresets button {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  opacity: 0.7;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.durationPresets button:hover {
+  background: var(--surface-hover);
+  opacity: 1;
+}
+
+.durationPresets button.presetActive {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
 }
 
 .controlBtn {

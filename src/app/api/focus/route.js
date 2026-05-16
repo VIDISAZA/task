@@ -2,22 +2,29 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import FocusSession from '@/models/FocusSession';
 import DailyStats from '@/models/DailyStats';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function POST(request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     await dbConnect();
     const body = await request.json();
-    const session = await FocusSession.create(body);
+    const focusSession = await FocusSession.create({ ...body, userId: session.user.id });
 
     // Update DailyStats
     const dateStr = new Date().toISOString().split('T')[0];
     await DailyStats.findOneAndUpdate(
-      { date: dateStr },
+      { date: dateStr, userId: session.user.id },
       { $inc: { totalFocusMinutes: body.durationMinutes } },
       { upsert: true, new: true }
     );
 
-    return NextResponse.json({ success: true, data: session }, { status: 201 });
+    return NextResponse.json({ success: true, data: focusSession }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 400 });
   }
@@ -25,8 +32,13 @@ export async function POST(request) {
 
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     await dbConnect();
-    const sessions = await FocusSession.find({}).sort({ completedAt: -1 }).limit(50);
+    const sessions = await FocusSession.find({ userId: session.user.id }).sort({ completedAt: -1 }).limit(50);
     return NextResponse.json({ success: true, data: sessions });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 400 });

@@ -66,6 +66,19 @@
   background: var(--surface-hover);
 }
 
+.digitalClock {
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  color: var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.15);
+}
+
 .badge {
   position: absolute;
   top: 8px;

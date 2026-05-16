@@ -6,7 +6,10 @@ import { useTimerStore } from '@/store/useTimerStore';
 import { Play, Pause, RotateCcw, Coffee, Zap } from 'lucide-react';
 
 export default function FocusPage() {
-  const { timeLeft, isActive, mode, startTimer, pauseTimer, resetTimer, setMode, tick, logSession } = useTimerStore();
+  const { 
+    timeLeft, isActive, mode, startTimer, pauseTimer, resetTimer, 
+    setMode, tick, logSession, focusDuration, breakDuration, setDuration 
+  } = useTimerStore();
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -18,7 +21,7 @@ export default function FocusPage() {
       pauseTimer();
       // Only log focus sessions, not breaks
       if (mode === 'focus') {
-        logSession(25);
+        logSession(focusDuration / 60);
         alert('Focus session completed! Great job.');
       }
       clearInterval(timerRef.current);
@@ -33,9 +36,8 @@ export default function FocusPage() {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  const progress = mode === 'focus' 
-    ? ((25 * 60 - timeLeft) / (25 * 60)) * 100 
-    : ((5 * 60 - timeLeft) / (5 * 60)) * 100;
+  const totalDuration = mode === 'focus' ? focusDuration : breakDuration;
+  const progress = totalDuration > 0 ? ((totalDuration - timeLeft) / totalDuration) * 100 : 0;
 
   return (
     <div>
@@ -85,6 +87,29 @@ export default function FocusPage() {
             </svg>
             <div className={styles.timeText}>{formatTime(timeLeft)}</div>
           </div>
+
+          {!isActive && (
+            <div className={styles.durationControls}>
+              <div className={styles.durationAdjust}>
+                <button onClick={() => setDuration(mode, (totalDuration / 60) - 5)}>-</button>
+                <span>{totalDuration / 60} min</span>
+                <button onClick={() => setDuration(mode, (totalDuration / 60) + 5)}>+</button>
+              </div>
+              {mode === 'focus' && (
+                <div className={styles.durationPresets}>
+                  {[15, 25, 45, 60].map(m => (
+                    <button 
+                      key={m} 
+                      onClick={() => setDuration(mode, m)}
+                      className={totalDuration / 60 === m ? styles.presetActive : ''}
+                    >
+                      {m}m
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           <div className={styles.controls}>
             {isActive ? (

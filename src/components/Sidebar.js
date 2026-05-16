@@ -6,6 +6,11 @@ import styles from './Sidebar.module.css';
 
 export default function Sidebar() {
   const pathname = usePathname();
+
+  if (pathname === '/login' || pathname === '/signup') {
+    return null;
+  }
+
   return (
     <aside className={styles.sidebar}>
       <Link href="/about" className={styles.logo} style={{ textDecoration: 'none' }}>

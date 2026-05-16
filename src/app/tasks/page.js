@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import Topbar from '@/components/Topbar';
 import styles from './page.module.css';
 import { useTaskStore } from '@/store/useTaskStore';
-import { Plus, Check, Trash2, Calendar, Star, CheckCircle2 } from 'lucide-react';
+import { Plus, Check, Trash2, Calendar, Star, CheckCircle2, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays, subMonths, addMonths } from 'date-fns';
 
 const EmptyState = ({ message, subMessage }) => (
   <div className={styles.emptyState}>
@@ -47,8 +48,10 @@ const TaskItem = ({ task, onUpdate, onDelete }) => (
 );
 
 export default function TasksPage() {
-  const [view, setView] = useState('matrix'); // 'matrix' or 'list'
+  const [view, setView] = useState('calendar'); // 'calendar', 'matrix' or 'list'
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
   const { tasks, fetchTasks, addTask, updateTask, deleteTask } = useTaskStore();
 
   const [newTask, setNewTask] = useState({
@@ -87,6 +90,73 @@ export default function TasksPage() {
     await addTask(taskData);
   };
 
+  const openTaskModalForDate = (date) => {
+    setNewTask({ ...newTask, dueDate: format(date, 'yyyy-MM-dd') });
+    setIsModalOpen(true);
+  };
+
+  const renderCalendar = () => {
+    const monthStart = startOfMonth(currentMonth);
+    const monthEnd = endOfMonth(monthStart);
+    const startDate = startOfWeek(monthStart);
+    const endDate = endOfWeek(monthEnd);
+
+    const dateFormat = "d";
+    const rows = [];
+    let days = [];
+    let day = startDate;
+    let formattedDate = "";
+
+    const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    while (day <= endDate) {
+      for (let i = 0; i < 7; i++) {
+        formattedDate = format(day, dateFormat);
+        const cloneDay = day;
+        
+        // Find tasks for this day
+        const dayTasks = tasks.filter(t => t.dueDate && isSameDay(new Date(t.dueDate), cloneDay));
+
+        days.push(
+          <div
+            className={`${styles.dayCell} ${!isSameMonth(day, monthStart) ? styles.otherMonth : ''} ${isSameDay(day, new Date()) ? styles.today : ''}`}
+            key={day.toString()}
+            onClick={() => setSelectedDate(cloneDay)}
+          >
+            <span className={styles.dayNumber}>{formattedDate}</span>
+            {dayTasks.slice(0, 3).map(t => (
+              <div key={t._id} className={`${styles.taskPill} ${t.status === 'completed' ? styles.completed : styles[t.priority]}`}>
+                {t.title}
+              </div>
+            ))}
+            {dayTasks.length > 3 && <div className={styles.taskPill} style={{background: 'transparent', color: 'var(--primary)'}}>+{dayTasks.length - 3} more</div>}
+          </div>
+        );
+        day = addDays(day, 1);
+      }
+      rows.push(
+        <div className={styles.calendarGrid} key={day.toString()}>
+          {days}
+        </div>
+      );
+      days = [];
+    }
+
+    return (
+      <div className={styles.calendarContainer}>
+        <div className={styles.calendarHeader}>
+          <button className={styles.calendarNavBtn} onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}><ChevronLeft size={20} /></button>
+          <h2>{format(currentMonth, "MMMM yyyy")}</h2>
+          <button className={styles.calendarNavBtn} onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}><ChevronRight size={20} /></button>
+        </div>
+        <div className={styles.calendarGrid} style={{ marginBottom: '1rem' }}>
+          {weekDays.map(wd => <div key={wd} className={styles.weekdayHeader}>{wd}</div>)}
+        </div>
+        <div>{rows}</div>
+      </div>
+    );
+  };
+
   return (
     <div>
       <Topbar title="Tasks & Matrix" />
@@ -94,6 +164,12 @@ export default function TasksPage() {
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.tabs}>
+            <button 
+              className={`${styles.tab} ${view === 'calendar' ? styles.active : ''}`}
+              onClick={() => setView('calendar')}
+            >
+              Calendar
+            </button>
             <button 
               className={`${styles.tab} ${view === 'matrix' ? styles.active : ''}`}
               onClick={() => setView('matrix')}
@@ -163,6 +239,8 @@ export default function TasksPage() {
               </div>
             </div>
           </div>
+        ) : view === 'calendar' ? (
+          renderCalendar()
         ) : (
           <div className="glass-panel" style={{ padding: '2rem' }}>
             <h3>All Pending Tasks</h3>
@@ -246,6 +324,38 @@ export default function TasksPage() {
                 <button type="submit" className="btn-primary">Save Task</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {selectedDate && (
+        <div className={styles.modalOverlay} onClick={() => setSelectedDate(null)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2 style={{ margin: 0 }}>Schedule for {format(selectedDate, "MMM d, yyyy")}</h2>
+              <button onClick={() => setSelectedDate(null)} style={{ background: 'none', border: 'none', color: 'var(--foreground)', cursor: 'pointer' }}><X size={24} /></button>
+            </div>
+            
+            <div className={styles.taskList} style={{ maxHeight: '300px', marginBottom: '1.5rem' }}>
+              {tasks.filter(t => t.dueDate && isSameDay(new Date(t.dueDate), selectedDate)).length > 0 ? (
+                tasks.filter(t => t.dueDate && isSameDay(new Date(t.dueDate), selectedDate)).map(t => (
+                  <TaskItem key={t._id} task={t} onUpdate={updateTask} onDelete={deleteTask} />
+                ))
+              ) : (
+                <EmptyState message="Free day!" subMessage="No tasks scheduled for this date." />
+              )}
+            </div>
+
+            <button 
+              className="btn-primary" 
+              style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }} 
+              onClick={() => {
+                setSelectedDate(null);
+                openTaskModalForDate(selectedDate);
+              }}
+            >
+              <Plus size={18} /> Add Task on this day
+            </button>
           </div>
         </div>
       )}
