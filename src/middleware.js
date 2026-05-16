@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-export async function proxy(request) {
+export async function middleware(request) {
   const token = await getToken({ 
     req: request, 
     secret: process.env.NEXTAUTH_SECRET || 'fallback_secret_key_for_dev_only' 
